@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RePhrase</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="drag-region">
+        <span class="logo">✨ RePhrase</span>
+      </div>
+      <button class="close-btn" id="closeBtn" title="Close (Esc)">×</button>
+    </div>
+    
+    <div class="tone-selector">
+      <button class="tone-btn active" data-tone="professional">Professional</button>
+      <button class="tone-btn" data-tone="casual">Casual</button>
+      <button class="tone-btn" data-tone="concise">Concise</button>
+      <button class="tone-btn" data-tone="elaborate">Elaborate</button>
+    </div>
+    
+    <div class="content">
+      <div class="original-section">
+        <label>Original</label>
+        <div class="text-box original" id="originalText"></div>
+      </div>
+      
+      <div class="result-section">
+        <label>Rephrased</label>
+        <div class="text-box result" id="resultText">
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <span>Rephrasing...</span>
+          </div>
+          <div class="result-content" id="resultContent"></div>
+          <div class="error" id="errorText"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="useBtn" disabled>Use This</button>
+    </div>
+  </div>
+  
+  <script src="renderer.js"></script>
+</body>
+</html>
