@@ -1,35 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RePhrase</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <div class="header">
       <div class="drag-region">
         <span class="logo">✨ RePhrase</span>
       </div>
-      <button class="close-btn" id="closeBtn" title="Close (Esc)">×</button>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeBtn" title="Toggle Theme">☀️</button>
+        <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
+        <button class="close-btn" id="closeBtn" title="Close (Esc)">×</button>
+      </div>
     </div>
-    
+
     <div class="tone-selector">
       <button class="tone-btn active" data-tone="professional">Professional</button>
       <button class="tone-btn" data-tone="casual">Casual</button>
       <button class="tone-btn" data-tone="concise">Concise</button>
       <button class="tone-btn" data-tone="elaborate">Elaborate</button>
+      <button class="tone-btn" data-tone="grammar">Grammar</button>
     </div>
-    
+
     <div class="content">
       <div class="original-section">
-        <label>Original</label>
+        <div class="section-header">
+          <label>Original</label>
+          <button class="copy-btn" id="copyOriginalBtn" title="Copy Original">📋</button>
+        </div>
         <div class="text-box original" id="originalText"></div>
+        <div class="char-count" id="originalCount">0 chars</div>
       </div>
-      
+
       <div class="result-section">
-        <label>Rephrased</label>
+        <div class="section-header">
+          <label>Rephrased</label>
+          <div class="variation-tabs" id="variationTabs" style="display: none;">
+            <button class="var-btn active" data-var="0">1</button>
+            <button class="var-btn" data-var="1">2</button>
+            <button class="var-btn" data-var="2">3</button>
+          </div>
+        </div>
         <div class="text-box result" id="resultText">
           <div class="loading" id="loading">
             <div class="spinner"></div>
@@ -38,15 +56,53 @@
           <div class="result-content" id="resultContent"></div>
           <div class="error" id="errorText"></div>
         </div>
+        <div class="char-count" id="resultCount">0 chars</div>
       </div>
     </div>
-    
+
     <div class="actions">
       <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
       <button class="btn btn-primary" id="useBtn" disabled>Use This</button>
     </div>
   </div>
-  
+
+  <!-- Settings Panel -->
+  <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h3>⚙️ Settings</h3>
+        <button class="close-btn" id="closeSettingsBtn">×</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-item">
+          <label>AI Model</label>
+          <select id="modelSelect">
+            <option value="qwen2.5:0.5b">qwen2.5:0.5b (Lightweight)</option>
+            <option value="gemma3:1b">gemma3:1b (Small)</option>
+            <option value="gemma3:4b">gemma3:4b (Quality)</option>
+            <option value="llama3.2">llama3.2</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <label>Auto-paste after Use</label>
+          <input type="checkbox" id="autoPasteToggle" checked>
+        </div>
+        <div class="setting-item">
+          <label>Generate Multiple Variations</label>
+          <input type="checkbox" id="variationsToggle">
+        </div>
+        <div class="setting-item">
+          <label>Keyboard Shortcut</label>
+          <input type="text" id="shortcutInput" value="Cmd+Shift+R" readonly>
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="btn btn-primary" id="saveSettingsBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script src="renderer.js"></script>
 </body>
+
 </html>

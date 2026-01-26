@@ -41,6 +41,7 @@ const TONE_PROMPTS = {
     casual: 'Rewrite the following text in a friendly, casual tone. Make it conversational and approachable while keeping the core message. Only output the rewritten text, nothing else.',
     concise: 'Rewrite the following text to be more concise and to the point. Remove unnecessary words while preserving the essential meaning. Only output the rewritten text, nothing else.',
     elaborate: 'Expand and elaborate on the following text. Add more detail and context while maintaining the original intent. Only output the rewritten text, nothing else.',
+    grammar: 'Fix any grammar, spelling, and punctuation errors in the following text. Keep the original tone and style, only correct mistakes. Only output the corrected text, nothing else.',
 };
 
 async function rephraseText(text, tone = 'professional') {

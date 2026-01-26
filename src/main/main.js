@@ -1,5 +1,7 @@
 const { app, BrowserWindow, globalShortcut, clipboard, ipcMain, screen } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const { exec } = require('child_process');
 const { rephraseText } = require('../services/ai');
 
 // Single instance lock - MUST be at the top before anything else
@@ -10,14 +12,43 @@ if (!gotTheLock) {
     let mainWindow = null;
     let originalClipboard = '';
 
+    // Settings file path
+    const settingsPath = path.join(app.getPath('userData'), 'settings.json');
+
+    function loadSettings() {
+        try {
+            if (fs.existsSync(settingsPath)) {
+                return JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+            }
+        } catch (e) {
+            console.error('Failed to load settings:', e);
+        }
+        return {
+            model: 'qwen2.5:0.5b',
+            autoPaste: true,
+            generateVariations: false,
+            theme: 'dark'
+        };
+    }
+
+    function saveSettings(settings) {
+        try {
+            fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+            return true;
+        } catch (e) {
+            console.error('Failed to save settings:', e);
+            return false;
+        }
+    }
+
     function createWindow() {
         // Get cursor position to show window near it
         const cursorPoint = screen.getCursorScreenPoint();
         const display = screen.getDisplayNearestPoint(cursorPoint);
 
         // Calculate position (centered near cursor but within screen bounds)
-        const windowWidth = 420;
-        const windowHeight = 340;
+        const windowWidth = 450;
+        const windowHeight = 420;
 
         let x = cursorPoint.x - windowWidth / 2;
         let y = cursorPoint.y - 50;
@@ -73,11 +104,19 @@ if (!gotTheLock) {
         originalClipboard = clipboard.readText();
 
         if (!originalClipboard || originalClipboard.trim().length === 0) {
-            // TODO: Could show a notification that clipboard is empty
             return;
         }
 
         createWindow();
+    }
+
+    // Auto-paste function
+    function autoPaste() {
+        if (process.platform === 'darwin') {
+            exec('osascript -e \'tell application "System Events" to keystroke "v" using command down\'');
+        } else if (process.platform === 'win32') {
+            exec('powershell -command "$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys(\'^v\')"');
+        }
     }
 
     // IPC Handlers
@@ -94,11 +133,18 @@ if (!gotTheLock) {
         }
     });
 
-    ipcMain.handle('use-text', (event, text) => {
+    ipcMain.handle('use-text', async (event, text, shouldAutoPaste) => {
         clipboard.writeText(text);
         if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.close();
         }
+
+        // Auto-paste if enabled
+        if (shouldAutoPaste) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            autoPaste();
+        }
+
         return true;
     });
 
@@ -106,6 +152,14 @@ if (!gotTheLock) {
         if (mainWindow && !mainWindow.isDestroyed()) {
             mainWindow.close();
         }
+    });
+
+    ipcMain.handle('get-settings', () => {
+        return loadSettings();
+    });
+
+    ipcMain.handle('save-settings', (event, settings) => {
+        return saveSettings(settings);
     });
 
     app.whenReady().then(() => {
@@ -123,7 +177,7 @@ if (!gotTheLock) {
             app.dock.hide();
         }
 
-        console.log('RePhrase is running! Press', shortcut, 'to activate.');
+        console.log('RePhrase V2 is running! Press', shortcut, 'to activate.');
     });
 
     app.on('will-quit', () => {
