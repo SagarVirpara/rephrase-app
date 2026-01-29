@@ -23,7 +23,7 @@ const modelSelect = document.getElementById('modelSelect');
 const autoPasteToggle = document.getElementById('autoPasteToggle');
 const variationsToggle = document.getElementById('variationsToggle');
 
-let currentTone = 'professional';
+let currentTone = 'grammar';
 let rephrasedText = '';
 let clipboardText = '';
 let isDarkTheme = true;

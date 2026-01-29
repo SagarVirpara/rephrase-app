@@ -28,7 +28,7 @@ function getApiProvider() {
 
 function getOllamaModel() {
     const config = loadConfig();
-    return config.model || 'phi3:mini'; // Fast model with good quality (~2.5GB RAM)
+    return config.model || 'llama3.2'; // Fast and high quality model (~2.0GB RAM)
 }
 
 function getOllamaUrl() {
@@ -37,14 +37,14 @@ function getOllamaUrl() {
 }
 
 const TONE_PROMPTS = {
-    professional: 'Rewrite the following text in a professional, polished tone suitable for business communication. Keep the core message but make it more articulate and refined. Only output the rewritten text, nothing else.',
-    casual: 'Rewrite the following text in a friendly, casual tone. Make it conversational and approachable while keeping the core message. Only output the rewritten text, nothing else.',
-    concise: 'Rewrite the following text to be more concise and to the point. Remove unnecessary words while preserving the essential meaning. Only output the rewritten text, nothing else.',
-    elaborate: 'Expand and elaborate on the following text. Add more detail and context while maintaining the original intent. Only output the rewritten text, nothing else.',
-    grammar: 'Fix any grammar, spelling, and punctuation errors in the following text. Keep the original tone and style, only correct mistakes. Only output the corrected text, nothing else.',
+    grammar: 'You are a professional proofreader. Correct all grammar, spelling, punctuation, and syntax errors in the input text. Preserve the original tone and style exactly. Do not rewrite, only correct mistakes. Strictly output ONLY the corrected text.',
+    professional: 'You are an expert business editor. Rewrite the input text to be professional, polished, and suitable for formal communication. Enhance clarity and vocabulary while preserving the core message. Strictly output ONLY the rewritten text. Do not include any conversational filler.',
+    casual: 'You are a friendly communication assistant. Rewrite the input text to be casual, warm, and conversational. Use approachable language but keep the meaning clear. Strictly output ONLY the rewritten text. Do not include any conversational filler.',
+    concise: 'You are a precise editor. Rewrite the input text to be concise and direct. Remove redundancy and unnecessary words while retaining the essential meaning. Strictly output ONLY the shortened text. Do not include any conversational filler.',
+    elaborate: 'You are a creative writer. Expand on the input text by adding relevant details, context, and flow to make it more comprehensive. Maintain the original intent. Strictly output ONLY the elaborated text. Do not include any conversational filler.',
 };
 
-async function rephraseText(text, tone = 'professional') {
+async function rephraseText(text, tone = 'grammar') {
     const provider = getApiProvider();
     const prompt = TONE_PROMPTS[tone] || TONE_PROMPTS.professional;
 
