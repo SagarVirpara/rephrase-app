@@ -28,7 +28,7 @@ function getApiProvider() {
 
 function getOllamaModel() {
     const config = loadConfig();
-    return config.model || 'qwen2.5:0.5b'; // Default lightweight model
+    return config.model || 'phi3:mini'; // Fast model with good quality (~2.5GB RAM)
 }
 
 function getOllamaUrl() {
